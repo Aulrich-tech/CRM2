@@ -1,1 +1,142 @@
-
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quiz | CIT 4302</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+:root{--good:#1d7a3a;--good-bg:#e1f3e6;--bad:#b3261e;--bad-bg:#fbe5e3}
+@media (prefers-color-scheme:dark){:root{--good:#6fd48c;--good-bg:#173a24;--bad:#ff8f87;--bad-bg:#40201e}}
+.qwrap{display:grid;grid-template-columns:1fr 16rem;gap:1.2rem;align-items:start}
+.qbox{background:var(--panel);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.qhead{display:flex;justify-content:space-between;gap:1rem;padding:.7rem 1rem;background:var(--accent-soft);border-bottom:1px solid var(--line);font-weight:700}
+.qhead span{font-weight:400;color:var(--muted)}
+.qbody{padding:1.2rem 1rem}
+.qtext{font-size:1.15rem;margin:0 0 1rem}
+.opts{display:grid;gap:.6rem}
+.opt{display:flex;gap:.8rem;align-items:flex-start;width:100%;text-align:left;padding:.75rem 1rem;border:2px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink);font:inherit;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt i{flex:none;width:1.3rem;height:1.3rem;border:2px solid var(--muted);border-radius:50%;margin-top:.15rem;display:grid;place-items:center;font-style:normal;font-size:.8rem;font-weight:700;line-height:1}
+.opt:disabled{cursor:default;color:var(--ink)}
+.opt.good{border-color:var(--good);background:var(--good-bg)}.opt.good i{border-color:var(--good);background:var(--good);color:var(--panel)}
+.opt.bad{border-color:var(--bad);background:var(--bad-bg)}.opt.bad i{border-color:var(--bad);background:var(--bad);color:var(--panel)}
+.fb{margin-top:1rem;padding:.7rem 1rem;border-radius:6px;font-weight:700}
+.fb.good{background:var(--good-bg);color:var(--good)}.fb.bad{background:var(--bad-bg);color:var(--bad)}
+.fb span{display:block;font-weight:400;color:var(--ink)}
+.qfoot{display:flex;justify-content:space-between;gap:1rem;padding:.8rem 1rem;border-top:1px solid var(--line);background:var(--bg)}
+.btn{padding:.55rem 1.2rem;border-radius:6px;border:1px solid var(--accent);background:var(--panel);color:var(--accent);font:inherit;font-weight:700;cursor:pointer}
+.btn.pri{background:var(--accent);color:var(--panel)}
+.btn:disabled{opacity:.4;cursor:default}
+.side{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:1rem;position:sticky;top:5rem}
+.side h2{font-size:1rem;margin:0 0 .6rem}
+.nums{display:grid;grid-template-columns:repeat(5,1fr);gap:.4rem}
+.nums button{aspect-ratio:1;border:1px solid var(--line);border-radius:4px;background:var(--panel);color:var(--ink);font:inherit;font-size:.85rem;cursor:pointer}
+.nums .cur{outline:3px solid var(--accent);outline-offset:1px}
+.nums .good{background:var(--good-bg);border-color:var(--good)}.nums .bad{background:var(--bad-bg);border-color:var(--bad)}
+.stat{margin:.8rem 0 0;font-size:.9rem;color:var(--muted)}
+.bar2{height:8px;background:var(--line);border-radius:9px;overflow:hidden;margin-top:.4rem}.bar2 b{display:block;height:100%;background:var(--accent);width:0}
+.score{font-size:2.4rem;font-family:"Bricolage Grotesque",system-ui,sans-serif;margin:.2rem 0}
+.miss{margin:.6rem 0;padding:.6rem .8rem;border:1px solid var(--line);border-radius:6px}
+.miss small{display:block;color:var(--muted)}
+@media (max-width:760px){.qwrap{grid-template-columns:1fr}.side{position:static;order:2}.nums{grid-template-columns:repeat(10,1fr)}.nums button{font-size:.7rem}}
+</style></head><body>
+<header class="top"><div class="bar"><strong class="brand">CIT 4302 CRM Reviewer</strong>
+<nav aria-label="Pages"><a href="index.html">Module 2</a><a href="module3.html">Module 3</a><a href="quiz.html" aria-current="page">Quiz</a></nav></div></header>
+<main>
+<div class="hero"><h1>Quiz: Modules 2 and 3</h1><p>50 multiple-choice items. Click an answer to see the result, then press Next.</p></div>
+<div class="qwrap"><div class="qbox" id="box" aria-live="polite"></div>
+<aside class="side"><h2>Questions</h2><div class="nums" id="nums"></div>
+<p class="stat" id="stat"></p><div class="bar2"><b id="prog"></b></div></aside></div>
+</main>
+<script>
+// [question, CORRECT answer, wrong, wrong, wrong]. Option order is shuffled each attempt.
+const Q=[
+["CRM technology helps businesses mainly to:","Collect, organize, access, and use customer information efficiently","Print invoices faster","Replace all employees with software","Design new products"],
+["Which reason for needing technology streamlines data collection so employees can access vital information quickly?","Customer Management","Pattern Analysis","Activity Automation","Information Sharing"],
+["Which describes Enhanced Efficiency as a reason CRM needs technology?","Automates routine tasks and organizes customer interactions","Connects all customer interactions","Lets customers access data over the internet","Divides customers into groups"],
+["Which role of technology in CRM analyzes customer behavior patterns?","Pattern Analysis","Data Collection","Information Sharing","Activity Automation"],
+["Which role allows seamless sharing of customer insights across marketing teams?","Information Sharing","Data Organization","Data Collection","Pattern Analysis"],
+["A centralized system that integrates customer information and interactions is called a:","CRM platform","Customer touchpoint","Sales pipeline","Marketing metric"],
+["Which touchpoint concept connects all customer interactions?","Unified Customer Experience","Multiple Interaction Channels","Enhanced Data Management","Activity Automation"],
+["Which major CRM application helps track leads, opportunities, and forecasts?","Sales Management","Marketing Automation","Customer Support","Data Collection"],
+["Which application organizes service requests, tracks complaints, and gives staff customer history?","Customer Support","Sales Management","Marketing Automation","Pattern Analysis"],
+["Which CRM type generates data to streamline processes?","Operational CRM","Analytical CRM","Collaborative CRM","Cloud CRM"],
+["Which CRM type uses customer information to understand behavior and trends?","Analytical CRM","Operational CRM","Collaborative CRM","Retail CRM"],
+["Which CRM type facilitates information sharing across departments?","Collaborative CRM","Operational CRM","Analytical CRM","Mobile CRM"],
+["In how CRM types collaborate, Unified Data Flow refers to:","Capturing customer transactions","Personalizing interactions","Accessing data over the internet","Reducing employee resistance"],
+["Cloud-based CRM means:","Accessing customer data and CRM applications over the internet","Storing customer data only on office computers","Using CRM only for printed reports","Sharing data only within one department"],
+["Which is NOT an advantage of cloud CRM?","Employee resistance","Scalability","Mobility","Easy updates"],
+["Centralized Data Access in CRM integration allows businesses to:","Access all customer data in one place","Keep each department's data separate","Remove the need for customer data","Limit data to the sales team"],
+["Which is NOT a benefit of CRM technology?","Integration issues","Improved customer service","Strengthened customer retention","Increased productivity"],
+["Which is a challenge of CRM?","Data quality","Better communication","Enhanced decision making","Improved customer service"],
+["Which is a CRM application in retail business?","Segmenting customers","Printing receipts","Designing store layouts","Hiring cashiers"],
+["Which integration benefit gives customers a cohesive experience by connecting touchpoints?","Improved Customer Experience","Centralized Data Access","Enhance Collaboration","Activity Automation"],
+["Sales strategy involves planning how an organization:","Identifies potential customers","Pays its employees","Designs its website","Stores its inventory"],
+["CRM allows a sales team to move from personal records and manual follow-ups to:","A more organized, data-driven sales process","Fewer customers","Broad, one-size-fits-all selling","Fully manual tracking"],
+["Which can a sales representative determine using CRM information?","Which leads require follow-up","Employee salaries","Office rent costs","Supplier prices"],
+["Which is the correct CRM sales flow?","Customer Information → Lead → Opportunity → Sales Action → Purchase → Follow-up","Lead → Customer Information → Purchase → Opportunity → Follow-up → Sales Action","Opportunity → Lead → Sales Action → Customer Information → Follow-up → Purchase","Purchase → Lead → Opportunity → Customer Information → Sales Action → Follow-up"],
+["Incomplete or outdated customer information can lead to:","Inappropriate sales actions","Faster purchases","Better segmentation","Higher conversion rates"],
+["Why would a rep review communication history before contacting a customer?","To avoid repeating previous discussions","To identify related products","To identify regular customers","To adjust the price"],
+["Reviewing previous purchases helps a rep to:","Identify related products or services","Avoid repeating discussions","Determine areas of interest","Determine whether a lead is new"],
+["A lead is:","A potential customer who may have an interest in a product or service","A completed sale","A customer who bought repeatedly","A closed opportunity"],
+["Which is part of lead management?","Identifying the source of the lead","Closing the sale","Printing the quotation","Calculating payroll"],
+["An opportunity represents:","A potential business transaction that has progressed beyond an initial lead","Any new contact","A completed purchase","A customer complaint"],
+["In the sales process, which stage comes right after Qualified Lead?","Opportunity","Closed Sale","Negotiation","Proposal/Quotation"],
+["Sales Force Automation (SFA) is:","CRM technology that automates and organizes routine sales activities","A way to hire more sales staff","A marketing campaign tool only","A manual tracking method"],
+["Which is a common SFA function?","Sales forecasting","Payroll processing","Inventory purchasing","Website hosting"],
+["Customer follow-up and retention does not end on:","Customer purchase","Customer complaint","Customer inquiry","Customer registration"],
+["In CRM-supported follow-up, what comes right after Customer Support?","Additional Need","Purchase","Follow-up","Future Sales Opportunity"],
+["In using CRM to improve sales strategy, what follows Identify Problem?","Adjust Strategy","Sales Analysis","Measure Results","Implement Action"],
+["Which can a company discover from CRM sales data?","Certain leads have higher conversion rates","Which employees are absent","Which suppliers are cheapest","Which offices are largest"],
+["CRM helps organizations move beyond:","Broad, one-size-fits-all marketing","Customer data","Campaign reporting","Segmentation"],
+["In the marketing process, what comes right after Customer Analysis?","Marketing Strategy","Campaign","Customer Response","Performance Measurement"],
+["Purchase history is used in marketing to:","Identify product interests","Identify target customers","Evaluate customer interest","Identify engagement"],
+["Campaign responses are used in marketing to:","Evaluate customer interest","Identify target customers","Develop relevant offers","Identify regular customers"],
+["Which can result from poor customer data quality?","Duplicate communication","Better customer experiences","Accurate campaign results","Relevant promotions"],
+["Customer segmentation is:","Dividing customers into groups based on shared characteristics, behaviors, or needs","Sending the same message to everyone","Deleting inactive customers","Automating emails"],
+["Which strategy fits inactive customers?","Re-engagement campaigns","Welcome offers","Loyalty reward","Exclusive offers"],
+["Which strategy fits frequent customers?","Loyalty reward","Welcome offers","Re-engagement campaigns","Product-specific promotions"],
+["Targeted marketing:","Focuses marketing efforts on a specific customer segment","Adapts messages to one individual's behavior","Automates all campaigns","Measures campaign revenue"],
+["Which is an example of personalized marketing?","Using a customer's name in an email","Sending one promotion to all customers","Printing flyers for everyone","Ignoring purchase history"],
+["In the automated sequence for a new customer, what follows the Welcome Email?","Product Information","Promotional Offer","Follow-Up Message","Customer Registration"],
+["In a marketing campaign, which step comes right after Define the campaign objective?","Develop the marketing message","Select the communication channel","Launch the campaign","Identify the target customer segment"],
+["Which marketing metric measures customers who completed the desired action?","Conversion rate","Campaign reach","Response rate","Engagement rate"]
+];
+const $=id=>document.getElementById(id);
+let order,ans,cur;
+const sh=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+function start(){order=Q.map(()=>sh([0,1,2,3]));ans=Q.map(()=>null);cur=0;render()}
+function part(i){return i<20?"Module 2":i<37?"Module 3, Lesson 1: Sales":"Module 3, Lesson 2: Marketing"}
+function pick(k){if(ans[cur]!==null)return;ans[cur]=k;render()}
+function go(i){cur=i;render();window.scrollTo({top:0})}
+function side(){
+ $("nums").innerHTML="";
+ Q.forEach((_,i)=>{const b=document.createElement("button");b.textContent=i+1;b.setAttribute("aria-label","Question "+(i+1));
+  if(ans[i]!==null)b.className=ans[i]===0?"good":"bad";if(i===cur)b.classList.add("cur");b.onclick=()=>go(i);$("nums").appendChild(b)});
+ const d=ans.filter(a=>a!==null).length;$("stat").textContent=d+" of "+Q.length+" answered";$("prog").style.width=d/Q.length*100+"%"}
+function render(){
+ side();const box=$("box");
+ if(cur>=Q.length){results(box);return}
+ const q=Q[cur],a=ans[cur];
+ box.innerHTML='<div class="qhead">Question '+(cur+1)+' <span>'+part(cur)+' | 1 pt</span></div><div class="qbody"><p class="qtext"></p><div class="opts"></div><div id="fb"></div></div><div class="qfoot"><button class="btn" id="prev">Previous</button><button class="btn pri" id="next"></button></div>';
+ box.querySelector(".qtext").textContent=q[0];
+ const o=box.querySelector(".opts");
+ order[cur].forEach(k=>{const b=document.createElement("button");b.className="opt";b.innerHTML="<i></i><span></span>";b.lastChild.textContent=q[k+1];
+  if(a!==null){b.disabled=true;if(k===0){b.classList.add("good");b.firstChild.textContent="\u2713"}else if(k===a){b.classList.add("bad");b.firstChild.textContent="\u2715"}}
+  else b.onclick=()=>pick(k);o.appendChild(b)});
+ if(a!==null){const f=document.createElement("div");f.className="fb "+(a===0?"good":"bad");
+  f.innerHTML=(a===0?"Correct!":"Incorrect.")+"<span></span>";f.lastChild.textContent=a===0?"":"Correct answer: "+q[1];$("fb").appendChild(f)}
+ $("prev").disabled=cur===0;$("prev").onclick=()=>go(cur-1);
+ const n=$("next");n.textContent=cur===Q.length-1?"Finish":"Next";n.disabled=a===null;n.onclick=()=>go(cur+1);
+}
+function results(box){
+ const s=ans.filter(a=>a===0).length,un=ans.filter(a=>a===null).length;
+ box.innerHTML='<div class="qhead">Results</div><div class="qbody"><div class="score"></div><p></p><div id="ml"></div></div><div class="qfoot"><button class="btn" id="back">Review questions</button><button class="btn pri" id="again">Retake quiz</button></div>';
+ box.querySelector(".score").textContent=s+" / "+Q.length+" ("+Math.round(s/Q.length*100)+"%)";
+ box.querySelector("p").textContent=un?un+" question(s) unanswered.":(s===Q.length?"Perfect score!":"Missed items are listed below.");
+ Q.forEach((q,i)=>{if(ans[i]===0)return;const d=document.createElement("div");d.className="miss";d.innerHTML="<small></small><b></b><div></div>";
+  d.children[0].textContent="Question "+(i+1);d.children[1].textContent=q[0];d.children[2].textContent=ans[i]===null?"Unanswered. Correct: "+q[1]:"Your answer: "+q[ans[i]+1]+" | Correct: "+q[1];$("ml").appendChild(d)});
+ $("back").onclick=()=>go(0);$("again").onclick=()=>{start();window.scrollTo({top:0})};
+}
+start();
+</script></body></html>
