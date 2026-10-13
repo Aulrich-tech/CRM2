@@ -1,0 +1,50 @@
+:root{--bg:#f2f5f3;--panel:#fff;--ink:#15252c;--muted:#51636b;--line:#d3ddd8;--accent:#0e6f66;--accent-soft:#dcefeb;--mark:#fff1cf;--mark-ink:#7a4a05;--radius:10px}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1a1e;--panel:#17262c;--ink:#e6efeb;--muted:#9bb0a9;--line:#2b3f46;--accent:#5fd1c1;--accent-soft:#16373a;--mark:#3a2f12;--mark-ink:#f2cf86}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:7rem;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:1.05rem/1.65 "Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif}
+h1,h2,h3{font-family:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;line-height:1.2;margin:0 0 .6rem}
+h1{font-size:clamp(1.8rem,5vw,2.8rem);letter-spacing:-.02em}
+h2{font-size:clamp(1.3rem,3.4vw,1.7rem)}
+h3{font-size:1.1rem;margin-top:1.4rem}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.top{position:sticky;top:0;z-index:10;background:var(--panel);border-bottom:1px solid var(--line)}
+.bar{max-width:62rem;margin:auto;padding:.6rem 1rem;display:flex;flex-wrap:wrap;gap:.4rem 1.2rem;align-items:center;justify-content:space-between}
+.brand{font-family:"Bricolage Grotesque",system-ui,sans-serif}
+.bar nav{display:flex;gap:.4rem}
+.bar nav a{padding:.35rem .8rem;border-radius:99px;text-decoration:none;color:var(--ink);border:1px solid var(--line)}
+.bar nav a[aria-current=page]{background:var(--accent);border-color:var(--accent);color:#fff}
+.jump{max-width:62rem;margin:auto;padding:0 1rem .6rem;display:flex;gap:.4rem;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.jump a{flex:none;font-size:.85rem;padding:.2rem .65rem;border-radius:6px;background:var(--accent-soft);text-decoration:none;color:var(--ink)}
+main{max-width:62rem;margin:auto;padding:1.5rem 1rem 4rem}
+.hero{margin-bottom:1.5rem}.hero p{color:var(--muted);max-width:42rem;margin:0}
+.lesson{margin:2.5rem 0 1rem;padding:.8rem 1rem;border-left:6px solid var(--accent);background:var(--accent-soft);border-radius:0 var(--radius) var(--radius) 0}
+.lesson h2{margin:0}
+section{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:1.1rem 1.2rem;margin:0 0 1rem}
+section>:last-child{margin-bottom:0}
+.def{margin:.4rem 0 .8rem;padding:.6rem .9rem;border-left:4px solid var(--accent);background:var(--accent-soft);border-radius:0 8px 8px 0}
+.def b{display:block;font-size:.85rem;color:var(--muted)}
+dl.terms{display:grid;gap:.6rem;margin:.6rem 0}
+dl.terms div{padding:.5rem .8rem;border:1px solid var(--line);border-radius:8px}
+dl.terms dt{font-weight:700}dl.terms dd{margin:0;color:var(--muted)}
+ul,ol{padding-left:1.3rem;margin:.4rem 0 .8rem}li{margin:.2rem 0}
+ul.two{columns:2;column-gap:2rem}ul.two li{break-inside:avoid}
+.flow{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:.4rem .2rem;align-items:center;margin:.6rem 0}
+.flow li{margin:0;padding:.35rem .75rem;border-radius:99px;background:var(--ink);color:var(--bg);font-size:.92rem}
+.flow li+li::before{content:"\203A";display:inline-block;margin-right:.55rem;margin-left:-.35rem;color:var(--accent);font-weight:700}
+.flow li{position:relative}
+.flow li+li{margin-left:.9rem}
+.flow li+li::before{position:absolute;left:-.8rem;margin:0}
+.flag{background:var(--mark);color:var(--mark-ink);padding:.5rem .8rem;border-radius:8px;margin:.6rem 0}
+.tw{overflow-x:auto;margin:.6rem 0;border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;min-width:20rem}
+th,td{text-align:left;padding:.5rem .8rem;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--accent-soft)}tr:last-child td{border-bottom:0}
+.pager{display:flex;justify-content:space-between;gap:1rem;margin-top:2rem;flex-wrap:wrap}
+.pager a{padding:.6rem 1rem;border:1px solid var(--accent);border-radius:8px;text-decoration:none;font-weight:700}
+@media (max-width:640px){body{font-size:1rem}ul.two{columns:1}section{padding:.9rem}
+.flow{flex-direction:column;align-items:stretch;gap:.9rem}.flow li{text-align:center;margin-left:0!important}
+.flow li+li::before{content:"\2193";left:50%;top:-1.05rem;transform:translateX(-50%);position:absolute}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media print{.top{position:static}.jump{display:none}section{break-inside:avoid}}
